@@ -1,0 +1,615 @@
+{
+  "updatedAt": "2026-10-29T08:04:37.049Z",
+  "createdAt": "2026-10-23T14:02:19.423Z",
+  "id": "egPPRlZmUz28A0Rn",
+  "name": "News",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9edba5d7-574f-40ab-b9dc-f56c622593c1",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -80,
+        208
+      ],
+      "id": "b1a5eb1e-5b44-4436-ba4b-658b19ffb59f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1392,
+        80
+      ],
+      "id": "f63be5da-b477-4349-98e8-d8c0364e57ee",
+      "name": "Discord1",
+      "webhookId": "3fc068df-7625-4641-b7b4-caa79e940fbe",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "OMOvHyxcb6y9BZOz",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.ad.nl/home/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "5b284f8a-08f0-4842-b13b-7f4fdcc0f7ea",
+      "name": "AD RSS Read"
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.nos.nl/nosnieuwsalgemeen",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        176
+      ],
+      "id": "0b65f15d-88fb-4e87-8722-d5594350084f",
+      "name": "NOS RSS Read"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.newsText }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Je bent een persoonlijke nieuwsbriefing-assistent voor een gebruiker in Nederland. Je taak is om een korte, dagelijkse nieuwsbriefing te schrijven op basis van RSS-items die worden aangeleverd.  INPUT Je ontvangt maximaal 20 items van de RSS-feed van AD en maximaal 20 items van de RSS-feed van NOS (totaal maximaal 40). Per item krijg je: bron, titel, publicatiedatum/-tijd en een korte beschrijving of samenvatting uit de feed. Gebruik uitsluitend deze aangeleverde informatie. Verzin geen details, open geen links en vul geen ontbrekende context aan met kennis die niet in de input staat.  WERKWIJZE 1. Identificeer welke items feitelijk over hetzelfde nieuwsfeit gaan (ook als titel/invalshoek net anders is) en voeg die samen tot één onderdeel van de briefing. Vermeld in dat geval kort beide bronnen, bijvoorbeeld \"(AD/NOS)\". Als bronnen elkaar tegenspreken op een feit, benoem dat kort neutraal. 2. Selecteer uit de resterende, unieke onderwerpen de 6 tot 10 belangrijkste. Prioriteer op: (a) directe impact op veel mensen in Nederland (politiek, economie, veiligheid, gezondheid), (b) majeure internationale ontwikkelingen, (c) nieuwswaarde/urgentie (breaking, ontwikkelende situaties). Laat lichte/lifestyle-berichten, kattenbelletjes en reclame-achtige content achterwege tenzij er niets zwaarders beschikbaar is. 3. Schrijf de briefing als doorlopende tekst, geen bullets of kopjes. Gebruik 3 à 5 korte alinea's, logisch geordend (bijv. binnenland eerst, dan buitenland, dan overig), met vloeiende overgangen. Voeg links toe naar de items aan het einde van het bericht: deze links tellen niet mee bij de woordlimiet. 4. Houd de toon neutraal en zakelijk: feitelijk, geen mening, geen sensatie, geen overdreven bijvoeglijke naamwoorden. 5. Mik op 150–250 woorden totaal, zodat de briefing in ongeveer 1 minuut te lezen is. 6. Sluit af met één regel: \"Gebaseerd op {aantal} berichten van AD en NOS, {datum}.\"  BEPERKINGEN - Geen eigen analyse, voorspellingen of opinie toevoegen. - Als een belangrijk onderwerp onvoldoende informatie bevat om correct samen te vatten, laat het liever weg dan te gokken. - Als er in totaal minder dan 6 bruikbare, unieke onderwerpen zijn, vat dan gewoon wat er is samen — vul niet kunstmatig aan."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1040,
+        80
+      ],
+      "id": "46c50928-a625-47fe-9735-042f9bdf3b14",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-5-5",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 5.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1040,
+        288
+      ],
+      "id": "ba7e7531-4a79-4e9e-a42b-1350bacafb05",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "bKyYknyrL9qoDKqP",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "maxItems": 20
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        592,
+        0
+      ],
+      "id": "c8060d3f-00b8-41cc-b7ed-e3f1375c6adf",
+      "name": "Limit AD 20"
+    },
+    {
+      "parameters": {
+        "maxItems": 20
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        592,
+        176
+      ],
+      "id": "e0f75de0-d4bb-46fe-ab4c-712ef8b5bc99",
+      "name": "Limit NOS 20"
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = '';\nfor (const item of $input.all()) {\n  const bron = item.json.bron || (item.json.link?.includes('ad.nl') ? 'AD' : 'NOS');\n  const titel = item.json.title;\n  const datum = item.json.isoDate || item.json.pubDate;\n  const beschrijving = item.json.contentSnippet || item.json.content || '';\n  text += `Bron: ${bron}\\nTitel: ${titel}\\nDatum: ${datum}\\nBeschrijving: ${beschrijving}\\n\\n`;\n}\nreturn [{ json: { newsText: text } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        176
+      ],
+      "id": "b933d18d-d09c-4c32-993c-d5b641c18ca7",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "AD RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "NOS RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "AD RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "NOS RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AD RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit AD 20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NOS RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit NOS 20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Discord1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit AD 20": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit NOS 20": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "70fa01af-1898-4975-869e-e8e236fe7b55",
+  "activeVersionId": "70fa01af-1898-4975-869e-e8e236fe7b55",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-10-23T14:02:19.424Z",
+      "createdAt": "2026-10-23T14:02:19.424Z",
+      "role": "workflow:owner",
+      "workflowId": "egPPRlZmUz28A0Rn",
+      "projectId": "qJVEYpuyHK5p5yj2"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-10-29T08:04:34.483Z",
+    "createdAt": "2026-10-29T08:04:34.483Z",
+    "versionId": "70fa01af-1898-4975-869e-e8e236fe7b55",
+    "workflowId": "egPPRlZmUz28A0Rn",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "9edba5d7-574f-40ab-b9dc-f56c622593c1",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9,
+                "triggerAtMinute": 5
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -80,
+          208
+        ],
+        "id": "b1a5eb1e-5b44-4436-ba4b-658b19ffb59f",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "authentication": "webhook",
+          "content": "={{ $json.text }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          1392,
+          80
+        ],
+        "id": "f63be5da-b477-4349-98e8-d8c0364e57ee",
+        "name": "Discord1",
+        "webhookId": "3fc068df-7625-4641-b7b4-caa79e940fbe",
+        "credentials": {
+          "discordWebhookApi": {
+            "id": "OMOvHyxcb6y9BZOz",
+            "name": "Discord Webhook account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "https://www.ad.nl/home/rss.xml",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          416,
+          0
+        ],
+        "id": "5b284f8a-08f0-4842-b13b-7f4fdcc0f7ea",
+        "name": "AD RSS Read"
+      },
+      {
+        "parameters": {
+          "url": "https://feeds.nos.nl/nosnieuwsalgemeen",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          416,
+          176
+        ],
+        "id": "0b65f15d-88fb-4e87-8722-d5594350084f",
+        "name": "NOS RSS Read"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.newsText }}",
+          "messages": {
+            "messageValues": [
+              {
+                "message": "Je bent een persoonlijke nieuwsbriefing-assistent voor een gebruiker in Nederland. Je taak is om een korte, dagelijkse nieuwsbriefing te schrijven op basis van RSS-items die worden aangeleverd.  INPUT Je ontvangt maximaal 20 items van de RSS-feed van AD en maximaal 20 items van de RSS-feed van NOS (totaal maximaal 40). Per item krijg je: bron, titel, publicatiedatum/-tijd en een korte beschrijving of samenvatting uit de feed. Gebruik uitsluitend deze aangeleverde informatie. Verzin geen details, open geen links en vul geen ontbrekende context aan met kennis die niet in de input staat.  WERKWIJZE 1. Identificeer welke items feitelijk over hetzelfde nieuwsfeit gaan (ook als titel/invalshoek net anders is) en voeg die samen tot één onderdeel van de briefing. Vermeld in dat geval kort beide bronnen, bijvoorbeeld \"(AD/NOS)\". Als bronnen elkaar tegenspreken op een feit, benoem dat kort neutraal. 2. Selecteer uit de resterende, unieke onderwerpen de 6 tot 10 belangrijkste. Prioriteer op: (a) directe impact op veel mensen in Nederland (politiek, economie, veiligheid, gezondheid), (b) majeure internationale ontwikkelingen, (c) nieuwswaarde/urgentie (breaking, ontwikkelende situaties). Laat lichte/lifestyle-berichten, kattenbelletjes en reclame-achtige content achterwege tenzij er niets zwaarders beschikbaar is. 3. Schrijf de briefing als doorlopende tekst, geen bullets of kopjes. Gebruik 3 à 5 korte alinea's, logisch geordend (bijv. binnenland eerst, dan buitenland, dan overig), met vloeiende overgangen. Voeg links toe naar de items aan het einde van het bericht: deze links tellen niet mee bij de woordlimiet. 4. Houd de toon neutraal en zakelijk: feitelijk, geen mening, geen sensatie, geen overdreven bijvoeglijke naamwoorden. 5. Mik op 150–250 woorden totaal, zodat de briefing in ongeveer 1 minuut te lezen is. 6. Sluit af met één regel: \"Gebaseerd op {aantal} berichten van AD en NOS, {datum}.\"  BEPERKINGEN - Geen eigen analyse, voorspellingen of opinie toevoegen. - Als een belangrijk onderwerp onvoldoende informatie bevat om correct samen te vatten, laat het liever weg dan te gokken. - Als er in totaal minder dan 6 bruikbare, unieke onderwerpen zijn, vat dan gewoon wat er is samen — vul niet kunstmatig aan."
+              }
+            ]
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          1040,
+          80
+        ],
+        "id": "46c50928-a625-47fe-9735-042f9bdf3b14",
+        "name": "Basic LLM Chain"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "claude-haiku-5-5",
+            "mode": "list",
+            "cachedResultName": "Claude Haiku 5.5"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+        "typeVersion": 1.3,
+        "position": [
+          1040,
+          288
+        ],
+        "id": "ba7e7531-4a79-4e9e-a42b-1350bacafb05",
+        "name": "Anthropic Chat Model",
+        "credentials": {
+          "anthropicApi": {
+            "id": "bKyYknyrL9qoDKqP",
+            "name": "Anthropic account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "maxItems": 20
+        },
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          592,
+          0
+        ],
+        "id": "c8060d3f-00b8-41cc-b7ed-e3f1375c6adf",
+        "name": "Limit AD 20"
+      },
+      {
+        "parameters": {
+          "maxItems": 20
+        },
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          592,
+          176
+        ],
+        "id": "e0f75de0-d4bb-46fe-ab4c-712ef8b5bc99",
+        "name": "Limit NOS 20"
+      },
+      {
+        "parameters": {
+          "jsCode": "let text = '';\nfor (const item of $input.all()) {\n  const bron = item.json.bron || (item.json.link?.includes('ad.nl') ? 'AD' : 'NOS');\n  const titel = item.json.title;\n  const datum = item.json.isoDate || item.json.pubDate;\n  const beschrijving = item.json.contentSnippet || item.json.content || '';\n  text += `Bron: ${bron}\\nTitel: ${titel}\\nDatum: ${datum}\\nBeschrijving: ${beschrijving}\\n\\n`;\n}\nreturn [{ json: { newsText: text } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          176
+        ],
+        "id": "b933d18d-d09c-4c32-993c-d5b641c18ca7",
+        "name": "Code in JavaScript"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "AD RSS Read",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "NOS RSS Read",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "AD RSS Read",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "NOS RSS Read",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AD RSS Read": {
+        "main": [
+          [
+            {
+              "node": "Limit AD 20",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NOS RSS Read": {
+        "main": [
+          [
+            {
+              "node": "Limit NOS 20",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Anthropic Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Discord1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limit AD 20": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limit NOS 20": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Richard Blaauw",
+    "name": null,
+    "description": null
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-10-23T14:52:49.669Z",
+      "createdAt": "2026-10-23T14:52:49.669Z",
+      "id": "JZQz5CTF8f8NfuJG",
+      "name": "news"
+    },
+    {
+      "updatedAt": "2026-10-23T14:52:50.864Z",
+      "createdAt": "2026-10-23T14:52:50.864Z",
+      "id": "i7uXyXmiLGCGkuEw",
+      "name": "fun"
+    }
+  ]
+}
