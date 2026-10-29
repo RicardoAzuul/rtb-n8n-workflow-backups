@@ -1,0 +1,382 @@
+{
+  "updatedAt": "2026-10-29T08:05:07.955Z",
+  "createdAt": "2026-10-26T15:56:06.608Z",
+  "id": "IIXFpw4w7ykjkAYn",
+  "name": "Check for weather warnings",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        576,
+        1680
+      ],
+      "id": "71db8488-2e00-4e9c-aa66-894584592d34",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://www.knmi.nl/nederland-nu/weer/waarschuwingen/noord-holland",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        768,
+        1696
+      ],
+      "id": "153c9e5c-5998-4623-87f8-002cd988de97",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=De bijgevoegde HTML data bevat mogelijk weer waarschuwingen voor provincies in Nederland. Ik wil graag weten of er waarschuwingen zijn voor de provincie Noord-Holland, wat de waarschuwing is en hoe  laat de waarschuwing in gaat. Ga door de HTML en haal de gevraagde info eruit.\n\n {{ $json.data }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        976,
+        1696
+      ],
+      "id": "9410e08b-0f66-4cfc-b548-2c3449189db9",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-5-5",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 5.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        976,
+        1904
+      ],
+      "id": "88c2cb68-4baa-4b24-8e47-7698d03ba17d",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "bKyYknyrL9qoDKqP",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=https://www.knmi.nl/nederland-nu/weer/waarschuwingen/noord-holland\n\n{{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1328,
+        1696
+      ],
+      "id": "fcb73204-154b-4610-8ac6-ccddabd7a29e",
+      "name": "Discord",
+      "webhookId": "ca7b0a90-c178-4bc1-b1cb-5f40795d0752",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "8iCvprdtDvrDYvCP",
+          "name": "Discord Webhook weather channel"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        608,
+        1888
+      ],
+      "id": "0445f481-0de0-4697-b1be-6c2393892b04",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateId": "4608",
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
+  "activeVersionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-10-26T15:56:06.612Z",
+      "createdAt": "2026-10-26T15:56:06.612Z",
+      "role": "workflow:owner",
+      "workflowId": "IIXFpw4w7ykjkAYn",
+      "projectId": "qJVEYpuyHK5p5yj2"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-10-29T08:05:05.903Z",
+    "createdAt": "2026-10-29T08:05:05.903Z",
+    "versionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
+    "workflowId": "IIXFpw4w7ykjkAYn",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          576,
+          1680
+        ],
+        "id": "71db8488-2e00-4e9c-aa66-894584592d34",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "url": "https://www.knmi.nl/nederland-nu/weer/waarschuwingen/noord-holland",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          768,
+          1696
+        ],
+        "id": "153c9e5c-5998-4623-87f8-002cd988de97",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=De bijgevoegde HTML data bevat mogelijk weer waarschuwingen voor provincies in Nederland. Ik wil graag weten of er waarschuwingen zijn voor de provincie Noord-Holland, wat de waarschuwing is en hoe  laat de waarschuwing in gaat. Ga door de HTML en haal de gevraagde info eruit.\n\n {{ $json.data }}",
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          976,
+          1696
+        ],
+        "id": "9410e08b-0f66-4cfc-b548-2c3449189db9",
+        "name": "Basic LLM Chain"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "claude-haiku-5-5",
+            "mode": "list",
+            "cachedResultName": "Claude Haiku 5.5"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+        "typeVersion": 1.3,
+        "position": [
+          976,
+          1904
+        ],
+        "id": "88c2cb68-4baa-4b24-8e47-7698d03ba17d",
+        "name": "Anthropic Chat Model",
+        "credentials": {
+          "anthropicApi": {
+            "id": "bKyYknyrL9qoDKqP",
+            "name": "Anthropic account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "authentication": "webhook",
+          "content": "=https://www.knmi.nl/nederland-nu/weer/waarschuwingen/noord-holland\n\n{{ $json.text }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.discord",
+        "typeVersion": 2,
+        "position": [
+          1328,
+          1696
+        ],
+        "id": "fcb73204-154b-4610-8ac6-ccddabd7a29e",
+        "name": "Discord",
+        "webhookId": "ca7b0a90-c178-4bc1-b1cb-5f40795d0752",
+        "credentials": {
+          "discordWebhookApi": {
+            "id": "8iCvprdtDvrDYvCP",
+            "name": "Discord Webhook weather channel"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9,
+                "triggerAtMinute": 6
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          608,
+          1888
+        ],
+        "id": "0445f481-0de0-4697-b1be-6c2393892b04",
+        "name": "Schedule Trigger"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Anthropic Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Discord",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Richard Blaauw",
+    "name": null,
+    "description": null
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-10-26T15:55:53.702Z",
+      "createdAt": "2026-10-26T15:55:53.702Z",
+      "id": "r2bcpQMoRtVXQU1s",
+      "name": "weather"
+    }
+  ]
+}
