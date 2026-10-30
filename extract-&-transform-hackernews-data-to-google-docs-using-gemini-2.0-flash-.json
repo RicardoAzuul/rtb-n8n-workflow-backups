@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-10-23T14:31:16.532Z",
-  "createdAt": "2026-10-23T14:31:16.532Z",
   "id": "nSYaTosn343SlPSX",
   "name": "Extract & transform HackerNews data to Google Docs using Gemini 2.0 flash",
   "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-23T14:31:16.532Z",
+  "updatedAt": "2026-10-23T14:31:16.532Z",
   "isArchived": false,
+  "versionId": "eba765b8-734d-4b72-84e4-8cb1f1ffe98f",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {},
@@ -383,26 +386,24 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
+  "pinData": {},
   "meta": {
     "templateId": "5677"
   },
-  "pinData": {},
-  "versionId": "eba765b8-734d-4b72-84e4-8cb1f1ffe98f",
-  "activeVersionId": null,
-  "triggerCount": 0,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-10-23T14:31:16.535Z",
-      "createdAt": "2026-10-23T14:31:16.535Z",
       "role": "workflow:owner",
       "workflowId": "nSYaTosn343SlPSX",
-      "projectId": "qJVEYpuyHK5p5yj2"
+      "projectId": "qJVEYpuyHK5p5yj2",
+      "createdAt": "2026-10-23T14:31:16.535Z",
+      "updatedAt": "2026-10-23T14:31:16.535Z"
     }
   ],
-  "activeVersion": null,
-  "tags": []
+  "activeVersion": null
 }
