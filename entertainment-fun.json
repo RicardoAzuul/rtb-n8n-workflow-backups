@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-10-24T07:15:00.395Z",
-  "createdAt": "2026-10-24T07:15:00.395Z",
   "id": "R4aMO8Q6uQubeZvJ",
   "name": "Entertainment",
   "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-24T07:15:00.395Z",
+  "updatedAt": "2026-10-24T07:15:00.395Z",
   "isArchived": false,
+  "versionId": "b77f546e-b3e8-4058-8f7b-ac2db80a54bb",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {},
@@ -202,6 +205,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
@@ -210,29 +214,26 @@
       "recurrenceRules": []
     }
   },
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "b77f546e-b3e8-4058-8f7b-ac2db80a54bb",
-  "activeVersionId": null,
-  "triggerCount": 1,
-  "shared": [
-    {
-      "updatedAt": "2026-10-24T07:15:00.406Z",
-      "createdAt": "2026-10-24T07:15:00.406Z",
-      "role": "workflow:owner",
-      "workflowId": "R4aMO8Q6uQubeZvJ",
-      "projectId": "qJVEYpuyHK5p5yj2"
-    }
-  ],
-  "activeVersion": null,
   "tags": [
     {
-      "updatedAt": "2026-10-23T14:52:50.864Z",
-      "createdAt": "2026-10-23T14:52:50.864Z",
       "id": "i7uXyXmiLGCGkuEw",
-      "name": "fun"
+      "name": "fun",
+      "createdAt": "2026-10-23T14:52:50.864Z",
+      "updatedAt": "2026-10-23T14:52:50.864Z"
     }
-  ]
+  ],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "R4aMO8Q6uQubeZvJ",
+      "projectId": "qJVEYpuyHK5p5yj2",
+      "createdAt": "2026-10-24T07:15:00.406Z",
+      "updatedAt": "2026-10-24T07:15:00.406Z"
+    }
+  ],
+  "activeVersion": null
 }
