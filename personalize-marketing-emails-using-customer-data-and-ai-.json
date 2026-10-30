@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-10-24T08:36:10.677Z",
-  "createdAt": "2026-10-24T08:36:10.677Z",
   "id": "Zpyo6MD50Fe2DTwI",
   "name": "Personalize marketing emails using customer data and AI",
   "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-24T08:36:10.677Z",
+  "updatedAt": "2026-10-24T08:36:10.677Z",
   "isArchived": false,
+  "versionId": "7546aa2c-d966-41ca-b54d-cd45cd23b1a2",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {},
@@ -633,26 +636,24 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
+  "pinData": {},
   "meta": {
     "templateId": "1978"
   },
-  "pinData": {},
-  "versionId": "7546aa2c-d966-41ca-b54d-cd45cd23b1a2",
-  "activeVersionId": null,
-  "triggerCount": 0,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-10-24T08:36:10.683Z",
-      "createdAt": "2026-10-24T08:36:10.683Z",
       "role": "workflow:owner",
       "workflowId": "Zpyo6MD50Fe2DTwI",
-      "projectId": "qJVEYpuyHK5p5yj2"
+      "projectId": "qJVEYpuyHK5p5yj2",
+      "createdAt": "2026-10-24T08:36:10.683Z",
+      "updatedAt": "2026-10-24T08:36:10.683Z"
     }
   ],
-  "activeVersion": null,
-  "tags": []
+  "activeVersion": null
 }
