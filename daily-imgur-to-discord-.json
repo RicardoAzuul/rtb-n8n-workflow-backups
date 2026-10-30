@@ -1,0 +1,156 @@
+{
+  "id": "W9rXWXJVFM5NRKRl",
+  "name": "Daily Imgur to Discord",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-29T12:02:41.193Z",
+  "updatedAt": "2026-10-29T12:02:41.193Z",
+  "isArchived": false,
+  "versionId": "e71605c7-466a-46ec-9afc-a7c65ea74029",
+  "triggerCount": 0,
+  "nodes": [
+    {
+      "id": "6f1c2a10-1111-4a00-8000-000000000001",
+      "name": "Every day 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 1,
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6f1c2a10-1111-4a00-8000-000000000002",
+      "name": "Manual run",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "6f1c2a10-1111-4a00-8000-000000000003",
+      "name": "Get hot Imgur posts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        100
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.imgur.com/3/gallery/hot/viral/day/0",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      }
+    },
+    {
+      "id": "6f1c2a10-1111-4a00-8000-000000000004",
+      "name": "Pick 5 and format",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        100
+      ],
+      "parameters": {
+        "jsCode": "const posts = ($input.first().json.data || [])\n  .filter(p => p.link && !p.nsfw && !p.is_ad)\n  .slice(0, 5);\nif (posts.length === 0) {\n  throw new Error('Imgur returned no usable posts');\n}\nconst lines = posts.map((p, i) => `${i + 1}. ${p.title || 'Untitled'} - ${p.link}`);\nconst content = `☀️ **Your daily Imgur**\\n${lines.join('\\n')}`;\nreturn [{ json: { content: content.slice(0, 2000) } }];"
+      }
+    },
+    {
+      "id": "6f1c2a10-1111-4a00-8000-000000000005",
+      "name": "Post to Discord",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        780,
+        100
+      ],
+      "parameters": {
+        "authentication": "webhook",
+        "operation": "sendLegacy",
+        "content": "={{ $json.content }}",
+        "options": {}
+      },
+      "webhookId": "bf75036d-3942-4287-9f60-66ff92b163da"
+    }
+  ],
+  "connections": {
+    "Every day 08:00": {
+      "main": [
+        [
+          {
+            "node": "Get hot Imgur posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual run": {
+      "main": [
+        [
+          {
+            "node": "Get hot Imgur posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get hot Imgur posts": {
+      "main": [
+        [
+          {
+            "node": "Pick 5 and format",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick 5 and format": {
+      "main": [
+        [
+          {
+            "node": "Post to Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "timezone": "Europe/Amsterdam",
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": null,
+  "meta": null,
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "W9rXWXJVFM5NRKRl",
+      "projectId": "qJVEYpuyHK5p5yj2",
+      "createdAt": "2026-10-29T12:02:41.198Z",
+      "updatedAt": "2026-10-29T12:02:41.198Z"
+    }
+  ],
+  "activeVersion": null
+}
