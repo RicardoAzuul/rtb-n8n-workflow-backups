@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-10-29T08:05:07.955Z",
-  "createdAt": "2026-10-26T15:56:06.608Z",
   "id": "IIXFpw4w7ykjkAYn",
   "name": "Check for weather warnings",
   "active": true,
+  "activeVersionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
+  "createdAt": "2026-10-26T15:56:06.608Z",
+  "updatedAt": "2026-10-29T08:05:07.955Z",
   "isArchived": false,
+  "versionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {},
@@ -171,34 +174,43 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": {
     "node:Schedule Trigger": {
-      "recurrenceRules": []
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
     }
   },
+  "pinData": {},
   "meta": {
     "templateId": "4608",
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
-  "activeVersionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
-  "triggerCount": 1,
+  "tags": [
+    {
+      "id": "r2bcpQMoRtVXQU1s",
+      "name": "weather",
+      "createdAt": "2026-10-26T15:55:53.702Z",
+      "updatedAt": "2026-10-26T15:55:53.702Z"
+    }
+  ],
   "shared": [
     {
-      "updatedAt": "2026-10-26T15:56:06.612Z",
-      "createdAt": "2026-10-26T15:56:06.612Z",
       "role": "workflow:owner",
       "workflowId": "IIXFpw4w7ykjkAYn",
-      "projectId": "qJVEYpuyHK5p5yj2"
+      "projectId": "qJVEYpuyHK5p5yj2",
+      "createdAt": "2026-10-26T15:56:06.612Z",
+      "updatedAt": "2026-10-26T15:56:06.612Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-10-29T08:05:05.903Z",
-    "createdAt": "2026-10-29T08:05:05.903Z",
     "versionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
     "workflowId": "IIXFpw4w7ykjkAYn",
     "nodes": [
@@ -367,16 +379,12 @@
         ]
       }
     },
+    "nodeGroups": [],
     "authors": "Richard Blaauw",
     "name": null,
-    "description": null
-  },
-  "tags": [
-    {
-      "updatedAt": "2026-10-26T15:55:53.702Z",
-      "createdAt": "2026-10-26T15:55:53.702Z",
-      "id": "r2bcpQMoRtVXQU1s",
-      "name": "weather"
-    }
-  ]
+    "description": null,
+    "autosaved": false,
+    "createdAt": "2026-10-29T08:05:05.903Z",
+    "updatedAt": "2026-10-29T08:05:05.903Z"
+  }
 }
