@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-10-29T08:04:37.049Z",
-  "createdAt": "2026-10-23T14:02:19.423Z",
   "id": "egPPRlZmUz28A0Rn",
   "name": "News",
   "active": true,
+  "activeVersionId": "70fa01af-1898-4975-869e-e8e236fe7b55",
+  "createdAt": "2026-10-23T14:02:19.423Z",
+  "updatedAt": "2026-10-29T08:04:37.049Z",
   "isArchived": false,
+  "versionId": "70fa01af-1898-4975-869e-e8e236fe7b55",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {},
@@ -285,33 +288,48 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": {
     "node:Schedule Trigger": {
-      "recurrenceRules": []
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
     }
   },
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "70fa01af-1898-4975-869e-e8e236fe7b55",
-  "activeVersionId": "70fa01af-1898-4975-869e-e8e236fe7b55",
-  "triggerCount": 1,
+  "tags": [
+    {
+      "id": "JZQz5CTF8f8NfuJG",
+      "name": "news",
+      "createdAt": "2026-10-23T14:52:49.669Z",
+      "updatedAt": "2026-10-23T14:52:49.669Z"
+    },
+    {
+      "id": "i7uXyXmiLGCGkuEw",
+      "name": "fun",
+      "createdAt": "2026-10-23T14:52:50.864Z",
+      "updatedAt": "2026-10-23T14:52:50.864Z"
+    }
+  ],
   "shared": [
     {
-      "updatedAt": "2026-10-23T14:02:19.424Z",
-      "createdAt": "2026-10-23T14:02:19.424Z",
       "role": "workflow:owner",
       "workflowId": "egPPRlZmUz28A0Rn",
-      "projectId": "qJVEYpuyHK5p5yj2"
+      "projectId": "qJVEYpuyHK5p5yj2",
+      "createdAt": "2026-10-23T14:02:19.424Z",
+      "updatedAt": "2026-10-23T14:02:19.424Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-10-29T08:04:34.483Z",
-    "createdAt": "2026-10-29T08:04:34.483Z",
     "versionId": "70fa01af-1898-4975-869e-e8e236fe7b55",
     "workflowId": "egPPRlZmUz28A0Rn",
     "nodes": [
@@ -594,22 +612,12 @@
         ]
       }
     },
+    "nodeGroups": [],
     "authors": "Richard Blaauw",
     "name": null,
-    "description": null
-  },
-  "tags": [
-    {
-      "updatedAt": "2026-10-23T14:52:49.669Z",
-      "createdAt": "2026-10-23T14:52:49.669Z",
-      "id": "JZQz5CTF8f8NfuJG",
-      "name": "news"
-    },
-    {
-      "updatedAt": "2026-10-23T14:52:50.864Z",
-      "createdAt": "2026-10-23T14:52:50.864Z",
-      "id": "i7uXyXmiLGCGkuEw",
-      "name": "fun"
-    }
-  ]
+    "description": null,
+    "autosaved": false,
+    "createdAt": "2026-10-29T08:04:34.483Z",
+    "updatedAt": "2026-10-29T08:04:34.483Z"
+  }
 }
