@@ -2,11 +2,11 @@
   "id": "63dzlFPFFDekzUd5",
   "name": "Automated daily workflow backup to GitHub",
   "active": true,
-  "activeVersionId": "94b4f2d2-af34-4a13-9534-7db01d1e6bf2",
+  "activeVersionId": "013b0365-b67f-40f0-aa3f-9c3ff6f0bba2",
   "createdAt": "2026-10-29T08:53:02.206Z",
-  "updatedAt": "2026-10-29T09:46:58.294Z",
+  "updatedAt": "2026-10-30T15:43:15.744Z",
   "isArchived": false,
-  "versionId": "94b4f2d2-af34-4a13-9534-7db01d1e6bf2",
+  "versionId": "013b0365-b67f-40f0-aa3f-9c3ff6f0bba2",
   "triggerCount": 1,
   "nodes": [
     {
@@ -15,6 +15,10 @@
           "interval": [
             {
               "triggerAtHour": 9
+            },
+            {
+              "triggerAtHour": 16,
+              "triggerAtMinute": 45
             }
           ]
         }
@@ -402,13 +406,18 @@
     }
   },
   "nodeGroups": [],
-  "settings": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
+        null,
         null
       ],
       "recurrenceRuleSignatures": [
+        null,
         null
       ]
     }
@@ -429,7 +438,7 @@
     }
   ],
   "activeVersion": {
-    "versionId": "94b4f2d2-af34-4a13-9534-7db01d1e6bf2",
+    "versionId": "013b0365-b67f-40f0-aa3f-9c3ff6f0bba2",
     "workflowId": "63dzlFPFFDekzUd5",
     "nodes": [
       {
@@ -438,6 +447,10 @@
             "interval": [
               {
                 "triggerAtHour": 9
+              },
+              {
+                "triggerAtHour": 16,
+                "triggerAtMinute": 45
               }
             ]
           }
@@ -826,10 +839,10 @@
     },
     "nodeGroups": [],
     "authors": "Richard Blaauw",
-    "name": null,
-    "description": null,
+    "name": "Version 013b0365",
+    "description": "Add extra schedule at 16.45",
     "autosaved": false,
-    "createdAt": "2026-10-29T08:55:00.668Z",
-    "updatedAt": "2026-10-29T08:55:00.668Z"
+    "createdAt": "2026-10-30T15:43:15.746Z",
+    "updatedAt": "2026-10-30T15:43:24.000Z"
   }
 }
