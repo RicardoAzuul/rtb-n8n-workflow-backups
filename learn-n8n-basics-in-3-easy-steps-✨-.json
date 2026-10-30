@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-10-23T13:59:14.163Z",
-  "createdAt": "2026-10-23T13:59:14.163Z",
   "id": "I0iK7HkuMceho4we",
   "name": "Learn n8n basics in 3 easy steps ✨",
   "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-23T13:59:14.163Z",
+  "updatedAt": "2026-10-23T13:59:14.163Z",
   "isArchived": false,
+  "versionId": "f3b3edd0-7534-46f7-aa9f-17ff5690be9e",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -560,26 +563,24 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
+  "pinData": {},
   "meta": {
     "templateId": "8527"
   },
-  "pinData": {},
-  "versionId": "f3b3edd0-7534-46f7-aa9f-17ff5690be9e",
-  "activeVersionId": null,
-  "triggerCount": 0,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-10-23T13:59:14.167Z",
-      "createdAt": "2026-10-23T13:59:14.167Z",
       "role": "workflow:owner",
       "workflowId": "I0iK7HkuMceho4we",
-      "projectId": "qJVEYpuyHK5p5yj2"
+      "projectId": "qJVEYpuyHK5p5yj2",
+      "createdAt": "2026-10-23T13:59:14.167Z",
+      "updatedAt": "2026-10-23T13:59:14.167Z"
     }
   ],
-  "activeVersion": null,
-  "tags": []
+  "activeVersion": null
 }
