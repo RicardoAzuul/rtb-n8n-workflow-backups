@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-10-26T15:55:16.303Z",
-  "createdAt": "2026-10-24T08:40:14.735Z",
   "id": "A32rOTxpycDOVrIP",
   "name": "Send daily weather forecasts from OpenWeatherMap to Telegram with smart formatting",
   "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-24T08:40:14.735Z",
+  "updatedAt": "2026-10-26T15:55:16.303Z",
   "isArchived": false,
+  "versionId": "41c53279-b1d5-4221-9218-bf7151145cbc",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -374,26 +377,24 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
+  "pinData": {},
   "meta": {
     "templateId": "4608"
   },
-  "pinData": {},
-  "versionId": "41c53279-b1d5-4221-9218-bf7151145cbc",
-  "activeVersionId": null,
-  "triggerCount": 0,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-10-24T08:40:14.741Z",
-      "createdAt": "2026-10-24T08:40:14.741Z",
       "role": "workflow:owner",
       "workflowId": "A32rOTxpycDOVrIP",
-      "projectId": "qJVEYpuyHK5p5yj2"
+      "projectId": "qJVEYpuyHK5p5yj2",
+      "createdAt": "2026-10-24T08:40:14.741Z",
+      "updatedAt": "2026-10-24T08:40:14.741Z"
     }
   ],
-  "activeVersion": null,
-  "tags": []
+  "activeVersion": null
 }
