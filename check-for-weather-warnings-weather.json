@@ -2,11 +2,11 @@
   "id": "IIXFpw4w7ykjkAYn",
   "name": "Check for weather warnings",
   "active": true,
-  "activeVersionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
+  "activeVersionId": "e1bb8de9-c6d7-4b64-b312-a2034eeff56e",
   "createdAt": "2026-10-26T15:56:06.608Z",
-  "updatedAt": "2026-10-29T08:05:07.955Z",
+  "updatedAt": "2026-10-30T15:42:25.103Z",
   "isArchived": false,
-  "versionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
+  "versionId": "e1bb8de9-c6d7-4b64-b312-a2034eeff56e",
   "triggerCount": 1,
   "nodes": [
     {
@@ -103,6 +103,10 @@
             {
               "triggerAtHour": 9,
               "triggerAtMinute": 6
+            },
+            {
+              "triggerAtHour": 16,
+              "triggerAtMinute": 45
             }
           ]
         }
@@ -176,14 +180,17 @@
   },
   "nodeGroups": [],
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
+        null,
         null
       ],
       "recurrenceRuleSignatures": [
+        null,
         null
       ]
     }
@@ -211,7 +218,7 @@
     }
   ],
   "activeVersion": {
-    "versionId": "30f43c69-31a6-44e5-99ba-19a1056d6d21",
+    "versionId": "e1bb8de9-c6d7-4b64-b312-a2034eeff56e",
     "workflowId": "IIXFpw4w7ykjkAYn",
     "nodes": [
       {
@@ -308,6 +315,10 @@
               {
                 "triggerAtHour": 9,
                 "triggerAtMinute": 6
+              },
+              {
+                "triggerAtHour": 16,
+                "triggerAtMinute": 45
               }
             ]
           }
@@ -381,10 +392,10 @@
     },
     "nodeGroups": [],
     "authors": "Richard Blaauw",
-    "name": null,
-    "description": null,
-    "autosaved": false,
-    "createdAt": "2026-10-29T08:05:05.903Z",
-    "updatedAt": "2026-10-29T08:05:05.903Z"
+    "name": "Version e1bb8de9",
+    "description": "Add extra schedule",
+    "autosaved": true,
+    "createdAt": "2026-10-30T15:42:25.104Z",
+    "updatedAt": "2026-10-30T15:42:38.000Z"
   }
 }
