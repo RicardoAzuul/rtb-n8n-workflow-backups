@@ -1,0 +1,452 @@
+{
+  "id": "WbNwMPehtFZTRbnL",
+  "name": "YouTube to Discord",
+  "active": true,
+  "activeVersionId": "b6fa0bf3-dd5c-425f-a86b-9070e4023da0",
+  "createdAt": "2026-10-30T20:51:08.361Z",
+  "updatedAt": "2026-10-30T20:56:37.241Z",
+  "isArchived": false,
+  "versionId": "b6fa0bf3-dd5c-425f-a86b-9070e4023da0",
+  "triggerCount": 1,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000001",
+      "name": "Daily at 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Fetch each channel's RSS feed, return only videos not posted before.\n// State (seen video IDs per channel) lives in workflow static data, which is\n// only persisted for production (scheduled) executions.\nconst channels = [\n  {\n    \"category\": \"Tech\",\n    \"name\": \"NetworkChuck\",\n    \"handle\": \"NetworkChuck\",\n    \"channelId\": \"UC9x0AN7BWHpCDHSm9NiJFJQ\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"Alton Brown\",\n    \"handle\": \"AltonBrown\",\n    \"channelId\": \"UCfDNi1aEljAQ17mUrfUjkvg\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"Alvin Zhou\",\n    \"handle\": \"AlvinKZhou\",\n    \"channelId\": \"UCsdD3quGf01RWABJt8wLe9g\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"Chef Jack Ovens\",\n    \"handle\": \"ChefJackOvens\",\n    \"channelId\": \"UCqRdvREgI2qLnKtiMfswzZQ\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"cuoredicioccolato\",\n    \"handle\": \"Spectacular-cuoredicioccolato\",\n    \"channelId\": \"UCntxIE8FKow3FbWG-BCApeQ\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"Internet Shaquille\",\n    \"handle\": \"internetshaquille\",\n    \"channelId\": \"UCSuT9FSddzI6W5Bij9XwtmA\"\n  },\n  {\n    \"category\": \"RPG\",\n    \"name\": \"Matthew Colville\",\n    \"handle\": \"mcolville\",\n    \"channelId\": \"UCkVdb9Yr8fc05_VbAVfskCA\"\n  },\n  {\n    \"category\": \"RPG\",\n    \"name\": \"MCDM\",\n    \"handle\": \"helloMCDM\",\n    \"channelId\": \"UCYUOOjT0j8__NMYHijAvNzg\"\n  },\n  {\n    \"category\": \"RPG\",\n    \"name\": \"Questing Beast\",\n    \"handle\": \"QuestingBeast\",\n    \"channelId\": \"UCvYwePdbWSEwUa-Pk02u3Zw\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"SkepticalPickle ASMR\",\n    \"handle\": \"SkepticalPickleASMR\",\n    \"channelId\": \"UCEqHu6TEeyvTCRKQNl8dmoA\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"Latte ASMR\",\n    \"handle\": \"LatteASMR\",\n    \"channelId\": \"UCQe2Y7V-C9bNMAcCJCBvzQQ\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"Moonlight Cottage ASMR\",\n    \"handle\": \"MoonlightCottageASMR\",\n    \"channelId\": \"UCftD_LCuDAwlPipnM6Uikqw\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"Musing Mira ASMR\",\n    \"handle\": \"musingmira\",\n    \"channelId\": \"UCZ4IabUhlmShkFliqWEXVWg\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"Bonnadora ASMR\",\n    \"handle\": \"bonnadorasmr\",\n    \"channelId\": \"UCKzWGSDCyb89uFiVVyCe4ww\"\n  }\n];\nconst webhooks = {\n  \"Tech\": \"https://discord.com/api/webhooks/1565827809446993990/Rdxugmdo-4Cpd89i6TW6ey4ix-Ks_SSujQ294r2a5rLOmxO9oWW7MvOHJczeU6ZW3vYr\",\n  \"ASMR\": \"https://discord.com/api/webhooks/1565829494273605823/bU1P8kEFTxupZGofLGGm5Aw7FWVDPwyhukwPEHtlELgi9HaX7cjs5_oEv4UszAmjY_be\",\n  \"RPG\": \"https://discord.com/api/webhooks/1565830021690429521/wm7Q5m0zBBglDZor9GYjHjEtLa10TB098Icjua77hOXLjfT7OOamVYh02HiOhuW7hxou\",\n  \"Cooking\": \"https://discord.com/api/webhooks/1565829867168207009/6us49MMobtcDp-UrRUxOtLnjOos3ygH6f7NmiCnsBQJ8sNt8hfEjVQZbRW7mxL9FbnBs\"\n};\n\nconst state = $getWorkflowStaticData('global');\nstate.seen = state.seen || {};\n\nconst decode = (s) => s\n  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '\"')\n  .replace(/&#39;|&apos;/g, \"'\").replace(/&amp;/g, '&');\n\nconst out = [];\nfor (const ch of channels) {\n  let xml;\n  try {\n    xml = await this.helpers.httpRequest({\n      method: 'GET',\n      url: `https://www.youtube.com/feeds/videos.xml?channel_id=${ch.channelId}`,\n      returnFullResponse: false,\n      timeout: 20000,\n    });\n  } catch (e) {\n    console.log(`Feed failed for ${ch.name}: ${e.message}`);\n    continue;\n  }\n  const videos = [...String(xml).matchAll(/<entry>([\\s\\S]*?)<\\/entry>/g)].map((m) => {\n    const e = m[1];\n    const get = (re) => (e.match(re) || [])[1];\n    return {\n      id: get(/<yt:videoId>([^<]+)<\\/yt:videoId>/),\n      title: decode(get(/<title>([^<]*)<\\/title>/) || ''),\n      url: get(/<link rel=\"alternate\" href=\"([^\"]+)\"/),\n      published: get(/<published>([^<]+)<\\/published>/),\n    };\n  }).filter((v) => v.id);\n\n  const first = !state.seen[ch.channelId];\n  const seen = new Set(state.seen[ch.channelId] || []);\n  const fresh = videos.filter((v) => !seen.has(v.id));\n  // First time we see a channel: record its videos, don't flood Discord.\n  if (!first) {\n    for (const v of fresh.sort((a, b) => a.published.localeCompare(b.published))) {\n      out.push({ json: {\n        category: ch.category,\n        channel: ch.name,\n        videoId: v.id,\n        title: v.title,\n        url: v.url,\n        published: v.published,\n        webhookUrl: webhooks[ch.category],\n      } });\n    }\n  }\n  state.seen[ch.channelId] = [...videos.map((v) => v.id), ...seen].slice(0, 100);\n}\nreturn out;"
+      },
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "name": "Find new videos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.webhookUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ content: '📺 **' + $json.channel + '** posted a new video:\\n' + $json.title + '\\n' + $json.url }) }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1
+            }
+          }
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "name": "Post to Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Daily at 09:00": {
+      "main": [
+        [
+          {
+            "node": "Find new videos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find new videos": {
+      "main": [
+        [
+          {
+            "node": "Post to Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:Daily at 09:00": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    },
+    "global": {
+      "seen": {
+        "UC9x0AN7BWHpCDHSm9NiJFJQ": [
+          "F92TIKWBGyg",
+          "cFdoXn6yvE4",
+          "Ck7wB7pdebQ",
+          "ijxeoYzLfRk",
+          "5wZUwZWxMLQ",
+          "jdoaBSOTiK4",
+          "Bjifz55TTPI",
+          "CgG3dtH5IMM",
+          "nuhh_KfCz9M",
+          "5pXMOUB_y0c",
+          "BeNxDM6XJK4",
+          "d1i1V4StMVI",
+          "7RVf25Rg0Mc",
+          "CbWySQdAM60",
+          "JP9_clebjDE"
+        ],
+        "UCfDNi1aEljAQ17mUrfUjkvg": [
+          "5vk8ANhjoHQ",
+          "jZ7pMhgPky0",
+          "FyXkTO0G21c",
+          "urN5Ewbl7FI",
+          "CrhIe9uYAK0",
+          "41k2Sb5xgZ8",
+          "to1y94oMZ5Q",
+          "i-MDV0VkHEg",
+          "hGPAWaLyuYM",
+          "yC11-UGlMho",
+          "_9blI4QBSjs",
+          "ihJS1KBEc9A",
+          "xurpEW92IGw",
+          "Ka6LgwqNAss",
+          "2Dji3wNwzKw"
+        ],
+        "UCsdD3quGf01RWABJt8wLe9g": [
+          "xotbnr_RezU",
+          "c5xnQuz1ql8",
+          "4-z6imVeNF8",
+          "rzpJWKvOmdg",
+          "e0OEmrHzJjk",
+          "5BqRSpJCEWo",
+          "-aCJtxibSpA",
+          "28NB3L9YuVI",
+          "-f3xtWvOopg",
+          "OuhKtpO9zuI",
+          "Z2-KahahFTI",
+          "e1xCU9ydG-A"
+        ],
+        "UCqRdvREgI2qLnKtiMfswzZQ": [
+          "ZkfQDVpg_BE",
+          "1_mG38FJ0_U",
+          "6opaO9QxODI",
+          "RJWUHarcoxQ",
+          "fUdGbSQ26xc",
+          "PJ4eDwzlqF4",
+          "BGChu_5Wnts",
+          "vAsaq06wVDY",
+          "wChCXdRbzwI",
+          "S24088k2XAo",
+          "hIO7Q1WeiwY",
+          "bxxBJpjWPmI",
+          "EQHWz8WZ2zY",
+          "sDg0GsQ3VNU",
+          "4EYu3tFK2bU"
+        ],
+        "UCntxIE8FKow3FbWG-BCApeQ": [
+          "Fz2XU2DCb5k",
+          "pgIkQONDtk0",
+          "1OMkWIvA5Ks",
+          "2Cs-7F60ak4",
+          "hMkFfrbCC1E",
+          "GCbsOkLSG7o",
+          "ThFSoi88DCY",
+          "ukLsGV4vnkI",
+          "stn74cha4oU",
+          "ZP38aIP8DSo",
+          "WN1cClKvnXc",
+          "d3O0ADawnaM",
+          "JX2MbMy5fec",
+          "X7F0rDiOeNw",
+          "edsNHjlAWwY"
+        ],
+        "UCSuT9FSddzI6W5Bij9XwtmA": [
+          "-U1t-8K33ig",
+          "OmmaHKzxtVw",
+          "NdFv7kGQe9I",
+          "8y4PbTMgJ8c",
+          "NjZVPFZ5pKo",
+          "6L2OJoAS30c",
+          "3D82bJEOskg",
+          "3JMZgcaypFc",
+          "zui0adF--GA",
+          "9gtMcyun4wQ",
+          "Fa10zhCiK-o",
+          "zo9HXmanWa4",
+          "DQ4hOKlL5aE",
+          "lElgu7UX-IQ",
+          "nSgOfsme69o"
+        ],
+        "UCkVdb9Yr8fc05_VbAVfskCA": [
+          "XAqX7kw7d2c",
+          "RkhSXRd6t0A",
+          "U_PIt3-y_Vw",
+          "SC5f4mKBmq0",
+          "Fdxk2eDtVoM",
+          "jVIWSuMgVT8",
+          "UAAtRkYPIOo",
+          "VN1Kqnv7xYE",
+          "luHj-2BapME",
+          "5UVOh11favU",
+          "rVueZQ0ehcU",
+          "QZs-Dj0tg_U",
+          "YgBrBFvqk-w",
+          "tr22j6TqGDo",
+          "VjE23O2VArI"
+        ],
+        "UCYUOOjT0j8__NMYHijAvNzg": [
+          "pvnQDqO7A2U",
+          "11x-GVrXO0w",
+          "KBm8TnSVWRY",
+          "L4A4Nj09oOQ",
+          "Avvc2QOdxW8",
+          "STQAzSr_HLs",
+          "kseZBren7Fc",
+          "FX3GNzAQn5I",
+          "eu4AwSMKoMQ",
+          "kmYXm_3rjdY",
+          "4Qf_JXEMhfA",
+          "RIhkhiHMr5Q",
+          "CoNJBfeuWf4",
+          "sma_aGlS6D4",
+          "O9dyWtPmBBA"
+        ],
+        "UCvYwePdbWSEwUa-Pk02u3Zw": [
+          "thaQrqpMsUU",
+          "_DBqaCH7aQw",
+          "Y9J4hFsOHp0",
+          "MOBulasoqdQ",
+          "qaAUEr3gIW8",
+          "ddt0Wp19f4g",
+          "hCwUtsCiBHk",
+          "uJgl4Bf4Bnk",
+          "PefAZXbeeq8",
+          "KPvZso5bRw8",
+          "Zh7gZv9dUWc",
+          "iiaV7ghJfuk",
+          "EnoQnbd831g",
+          "xyTQHTJfWE4",
+          "PIdETfN3nQs"
+        ],
+        "UCEqHu6TEeyvTCRKQNl8dmoA": [
+          "bXb46tDHf-E",
+          "QoRBeQdEt1U",
+          "QNWP0BKB2cw",
+          "pBXSlOk471k",
+          "3_fPkmWABB4",
+          "3DpY1Cwq7xE",
+          "CLBsOQGCwRU",
+          "fKuwYvZQL64",
+          "qyJ6_Nu6wXQ",
+          "7arGjrt9j2c",
+          "QXWR-ey7BlI",
+          "Z2DWPaKcuGo",
+          "GtK-xbDfcmY",
+          "pFFn4crhLxM",
+          "XZW5-qOxNpk"
+        ],
+        "UCQe2Y7V-C9bNMAcCJCBvzQQ": [
+          "E_PzIwEeyyg",
+          "HIEJTjSHpTI",
+          "IneQgnnw6cw",
+          "_Czb5zLHcBw",
+          "4KVmDMIEcG8",
+          "cW2wxLI6FmE",
+          "lHbvUhbrTJU",
+          "3lEe9qhlcCY",
+          "-R74ORpHgVs",
+          "xNZDTfBQ_eQ",
+          "754iSsgYGkA",
+          "4CkTBn014hw",
+          "qO-K3D9BdzY",
+          "DoirTSeqX5A",
+          "k0CQetnvHgY"
+        ],
+        "UCftD_LCuDAwlPipnM6Uikqw": [
+          "jyWCfkPJHQo",
+          "JSyKupw8azs",
+          "QyTi7S91iow",
+          "rOyKRfhCNQY",
+          "rlrRmXZruS4",
+          "WYt4dZJDguI",
+          "sT3yz-Gj6s0",
+          "wT8EIFfOdoY",
+          "WlTLtQCP-xI",
+          "U6lyY0EDezA",
+          "SHNtU3MK3W8",
+          "dsDIk96Nmpk",
+          "c0wuHKJ2vmE",
+          "CDsNF1onzvs",
+          "18hRO4SERAw"
+        ],
+        "UCZ4IabUhlmShkFliqWEXVWg": [
+          "0-S5_hvjnt0",
+          "Jh97qNQ4Wx4",
+          "7V-pUBONAlg",
+          "ovd0TX7hCyw",
+          "ZvJkBfCxnYI",
+          "e8h9fE7ToYc",
+          "oZhyFbDSJrw",
+          "9KNEl5aDD8I",
+          "uCaSQ9q6C_M",
+          "sJiL5GHekh4",
+          "vIDsXJ4ZJbY",
+          "b_J0HORAqU0",
+          "QHEWeYrcfRM",
+          "VWFbk2QhdTg",
+          "fHrf6fuEh8o"
+        ],
+        "UCKzWGSDCyb89uFiVVyCe4ww": [
+          "JL1m8ckTuBc",
+          "7twzRG5InMI",
+          "eJWB5unxxKQ",
+          "59Iyburr6ak",
+          "RMxHcO76Kfw",
+          "ebUJY8i_aUc",
+          "ns1uhp465Zo",
+          "-mfI2FQFxUA",
+          "QVVx7tPqHAc",
+          "raeP_6-2koQ",
+          "iUyD6RpoFX4",
+          "uoj15j1FOFw",
+          "aICAY_YmUJI",
+          "heSGLnPp82E",
+          "73EWunfUc1Y"
+        ]
+      }
+    }
+  },
+  "pinData": {},
+  "meta": null,
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "WbNwMPehtFZTRbnL",
+      "projectId": "qJVEYpuyHK5p5yj2",
+      "createdAt": "2026-10-30T20:51:08.367Z",
+      "updatedAt": "2026-10-30T20:51:08.367Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "b6fa0bf3-dd5c-425f-a86b-9070e4023da0",
+    "workflowId": "WbNwMPehtFZTRbnL",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9
+              }
+            ]
+          }
+        },
+        "id": "a1000000-0000-4000-8000-000000000001",
+        "name": "Daily at 09:00",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Fetch each channel's RSS feed, return only videos not posted before.\n// State (seen video IDs per channel) lives in workflow static data, which is\n// only persisted for production (scheduled) executions.\nconst channels = [\n  {\n    \"category\": \"Tech\",\n    \"name\": \"NetworkChuck\",\n    \"handle\": \"NetworkChuck\",\n    \"channelId\": \"UC9x0AN7BWHpCDHSm9NiJFJQ\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"Alton Brown\",\n    \"handle\": \"AltonBrown\",\n    \"channelId\": \"UCfDNi1aEljAQ17mUrfUjkvg\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"Alvin Zhou\",\n    \"handle\": \"AlvinKZhou\",\n    \"channelId\": \"UCsdD3quGf01RWABJt8wLe9g\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"Chef Jack Ovens\",\n    \"handle\": \"ChefJackOvens\",\n    \"channelId\": \"UCqRdvREgI2qLnKtiMfswzZQ\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"cuoredicioccolato\",\n    \"handle\": \"Spectacular-cuoredicioccolato\",\n    \"channelId\": \"UCntxIE8FKow3FbWG-BCApeQ\"\n  },\n  {\n    \"category\": \"Cooking\",\n    \"name\": \"Internet Shaquille\",\n    \"handle\": \"internetshaquille\",\n    \"channelId\": \"UCSuT9FSddzI6W5Bij9XwtmA\"\n  },\n  {\n    \"category\": \"RPG\",\n    \"name\": \"Matthew Colville\",\n    \"handle\": \"mcolville\",\n    \"channelId\": \"UCkVdb9Yr8fc05_VbAVfskCA\"\n  },\n  {\n    \"category\": \"RPG\",\n    \"name\": \"MCDM\",\n    \"handle\": \"helloMCDM\",\n    \"channelId\": \"UCYUOOjT0j8__NMYHijAvNzg\"\n  },\n  {\n    \"category\": \"RPG\",\n    \"name\": \"Questing Beast\",\n    \"handle\": \"QuestingBeast\",\n    \"channelId\": \"UCvYwePdbWSEwUa-Pk02u3Zw\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"SkepticalPickle ASMR\",\n    \"handle\": \"SkepticalPickleASMR\",\n    \"channelId\": \"UCEqHu6TEeyvTCRKQNl8dmoA\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"Latte ASMR\",\n    \"handle\": \"LatteASMR\",\n    \"channelId\": \"UCQe2Y7V-C9bNMAcCJCBvzQQ\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"Moonlight Cottage ASMR\",\n    \"handle\": \"MoonlightCottageASMR\",\n    \"channelId\": \"UCftD_LCuDAwlPipnM6Uikqw\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"Musing Mira ASMR\",\n    \"handle\": \"musingmira\",\n    \"channelId\": \"UCZ4IabUhlmShkFliqWEXVWg\"\n  },\n  {\n    \"category\": \"ASMR\",\n    \"name\": \"Bonnadora ASMR\",\n    \"handle\": \"bonnadorasmr\",\n    \"channelId\": \"UCKzWGSDCyb89uFiVVyCe4ww\"\n  }\n];\nconst webhooks = {\n  \"Tech\": \"https://discord.com/api/webhooks/1565827809446993990/Rdxugmdo-4Cpd89i6TW6ey4ix-Ks_SSujQ294r2a5rLOmxO9oWW7MvOHJczeU6ZW3vYr\",\n  \"ASMR\": \"https://discord.com/api/webhooks/1565829494273605823/bU1P8kEFTxupZGofLGGm5Aw7FWVDPwyhukwPEHtlELgi9HaX7cjs5_oEv4UszAmjY_be\",\n  \"RPG\": \"https://discord.com/api/webhooks/1565830021690429521/wm7Q5m0zBBglDZor9GYjHjEtLa10TB098Icjua77hOXLjfT7OOamVYh02HiOhuW7hxou\",\n  \"Cooking\": \"https://discord.com/api/webhooks/1565829867168207009/6us49MMobtcDp-UrRUxOtLnjOos3ygH6f7NmiCnsBQJ8sNt8hfEjVQZbRW7mxL9FbnBs\"\n};\n\nconst state = $getWorkflowStaticData('global');\nstate.seen = state.seen || {};\n\nconst decode = (s) => s\n  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '\"')\n  .replace(/&#39;|&apos;/g, \"'\").replace(/&amp;/g, '&');\n\nconst out = [];\nfor (const ch of channels) {\n  let xml;\n  try {\n    xml = await this.helpers.httpRequest({\n      method: 'GET',\n      url: `https://www.youtube.com/feeds/videos.xml?channel_id=${ch.channelId}`,\n      returnFullResponse: false,\n      timeout: 20000,\n    });\n  } catch (e) {\n    console.log(`Feed failed for ${ch.name}: ${e.message}`);\n    continue;\n  }\n  const videos = [...String(xml).matchAll(/<entry>([\\s\\S]*?)<\\/entry>/g)].map((m) => {\n    const e = m[1];\n    const get = (re) => (e.match(re) || [])[1];\n    return {\n      id: get(/<yt:videoId>([^<]+)<\\/yt:videoId>/),\n      title: decode(get(/<title>([^<]*)<\\/title>/) || ''),\n      url: get(/<link rel=\"alternate\" href=\"([^\"]+)\"/),\n      published: get(/<published>([^<]+)<\\/published>/),\n    };\n  }).filter((v) => v.id);\n\n  const first = !state.seen[ch.channelId];\n  const seen = new Set(state.seen[ch.channelId] || []);\n  const fresh = videos.filter((v) => !seen.has(v.id));\n  // First time we see a channel: record its videos, don't flood Discord.\n  if (!first) {\n    for (const v of fresh.sort((a, b) => a.published.localeCompare(b.published))) {\n      out.push({ json: {\n        category: ch.category,\n        channel: ch.name,\n        videoId: v.id,\n        title: v.title,\n        url: v.url,\n        published: v.published,\n        webhookUrl: webhooks[ch.category],\n      } });\n    }\n  }\n  state.seen[ch.channelId] = [...videos.map((v) => v.id), ...seen].slice(0, 100);\n}\nreturn out;"
+        },
+        "id": "a1000000-0000-4000-8000-000000000002",
+        "name": "Find new videos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          224,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $json.webhookUrl }}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ content: '📺 **' + $json.channel + '** posted a new video:\\n' + $json.title + '\\n' + $json.url }) }}",
+          "options": {
+            "batching": {
+              "batch": {
+                "batchSize": 1
+              }
+            }
+          }
+        },
+        "id": "a1000000-0000-4000-8000-000000000003",
+        "name": "Post to Discord",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          448,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Daily at 09:00": {
+        "main": [
+          [
+            {
+              "node": "Find new videos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Find new videos": {
+        "main": [
+          [
+            {
+              "node": "Post to Discord",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Richard Blaauw",
+    "name": null,
+    "description": null,
+    "autosaved": true,
+    "createdAt": "2026-10-30T20:56:37.243Z",
+    "updatedAt": "2026-10-30T20:56:37.243Z"
+  }
+}
